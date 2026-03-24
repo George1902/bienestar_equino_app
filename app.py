@@ -176,6 +176,35 @@ if st.button("🔍 Analizar caballo", use_container_width=True):
     except Exception as e:
         st.error(f"Error en predicción: {e}")
 
+# ── Alertas clínicas ──────────────────────────────────────
+st.subheader("⚠️ Alertas clínicas")
+alertas = []
+
+if pulse > 80:
+    alertas.append("🔴 Pulso muy elevado — estrés cardiovascular severo")
+elif pulse > 60:
+    alertas.append("🟡 Pulso elevado — monitorear de cerca")
+
+if rectal_temp > 39.0:
+    alertas.append("🔴 Temperatura alta — posible infección")
+elif rectal_temp < 37.0:
+    alertas.append("🔴 Temperatura baja — hipotermia")
+
+if pain >= 3:
+    alertas.append("🔴 Dolor severo — requiere atención inmediata")
+
+if peristalsis == 0:
+    alertas.append("🔴 Peristalsis ausente — riesgo de cólico")
+
+if total_protein > 8.5:
+    alertas.append("🟡 Proteína elevada — posible deshidratación")
+
+if alertas:
+    for alerta in alertas:
+        st.warning(alerta)
+else:
+    st.success("✅ Sin alertas clínicas críticas detectadas")
+
 st.divider()
 st.caption("""
 ⚠️ Este modelo es una herramienta de apoyo clínico con
