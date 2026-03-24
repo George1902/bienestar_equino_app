@@ -14,3 +14,12 @@ df = cargar_datos()
 
 st.write("Datos cargados:")
 st.write(df.head())
+
+@st.cache_resource
+def cargar_modelos():
+    with open('modelo_equino.pkl', 'rb') as f:
+        modelo = pickle.load(f)
+    return modelo
+modelo =  cargar_modelo()
+
+st.write("Modelo Cargado")
