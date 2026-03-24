@@ -6,7 +6,7 @@ import os
 
 # ── CONFIGURACIÓN ─────────────────────────────────────────
 st.set_page_config(
-    page_title="Bienestar Equino — Predictor Clínico",
+    page_title="Bienestar Equino — Analizador de Riesgo Clínico Equino",
     page_icon="🐴",
     layout="centered"
 )
@@ -175,3 +175,10 @@ if st.button("🔍 Analizar caballo", use_container_width=True):
 
     except Exception as e:
         st.error(f"Error en predicción: {e}")
+
+st.divider()
+    st.caption("""
+    ⚠️ Este modelo es una herramienta de apoyo clínico con
+    65% de accuracy. No reemplaza el diagnóstico veterinario
+    profesional. Desarrollado por Jorge Ojeda.
+    """)
