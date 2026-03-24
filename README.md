@@ -22,7 +22,7 @@ con datos reales.
 
 ## 🚀 App en vivo
 
-👉 **[Probar la app aquí](https://bienestarequino-george1902.streamlit.app)**
+👉 **[Probar la app aquí](https://bienestarequino-george-1902.streamlit.app/)**
 
 ---
 
