@@ -177,8 +177,8 @@ if st.button("🔍 Analizar caballo", use_container_width=True):
         st.error(f"Error en predicción: {e}")
 
 st.divider()
-    st.caption("""
-    ⚠️ Este modelo es una herramienta de apoyo clínico con
-    65% de accuracy. No reemplaza el diagnóstico veterinario
-    profesional. Desarrollado por Jorge Ojeda.
-    """)
+st.caption("""
+⚠️ Este modelo es una herramienta de apoyo clínico con
+65% de accuracy. No reemplaza el diagnóstico veterinario
+profesional. Desarrollado por Jorge Ojeda.
+""")
