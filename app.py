@@ -16,7 +16,7 @@ st.write("Datos cargados:")
 st.write(df.head())
 
 @st.cache_resource
-def cargar_modelos():
+def cargar_modelo():
     with open('modelo_equino.pkl', 'rb') as f:
         modelo = pickle.load(f)
     return modelo
