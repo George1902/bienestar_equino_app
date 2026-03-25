@@ -11,26 +11,25 @@ st.set_page_config(
     layout="centered"
 )
 
-# ESTILO CSS
+# ESTILO CSS (TAMAÑO EQUILIBRADO)
 st.markdown("""
 <style>
 .main-title {
     text-align: center;
-    font-size: clamp(5rem, 10vw, 11rem) !important;
-    font-weight: 900;
+    font-size: clamp(2.5rem, 5vw, 4rem) !important;
+    font-weight: 800;
     margin-bottom: 0;
-    line-height: 1.1;
+    line-height: 1.2;
 }
 
 .main-subtitle {
     text-align: center;
-    font-size: clamp(2rem, 4vw, 4rem) !important;
+    font-size: clamp(1.2rem, 2vw, 1.8rem) !important;
     color: #6c757d;
-    margin-top: -10px;
-    margin-bottom: 1.5rem;
-    font-weight: 500;
-    letter-spacing: 0.5px;
-    opacity: 0.9;
+    margin-top: 0.2rem;
+    margin-bottom: 1.2rem;
+    font-weight: 400;
+    opacity: 0.85;
 }
 </style>
 """, unsafe_allow_html=True)
