@@ -24,6 +24,9 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 <style>
+
+st.markdown("""
+<style>
 .main-subtitle {
     text-align: center;
     font-size: clamp(2rem, 5vw, 6rem);
@@ -32,7 +35,6 @@ st.markdown("""
     font-weight: 500;
 }
 </style>
-""", unsafe_allow_html=True)
 """, unsafe_allow_html=True)
 
 # CARGA DE MODELOS
