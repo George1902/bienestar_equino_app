@@ -16,24 +16,33 @@ st.markdown("""
 <style>
 .main-title {
     text-align: center;
-    font-size: clamp(4rem, 10vw, 12rem);
+    font-size: clamp(5rem, 10vw, 11rem) !important;
     font-weight: 900;
-    margin-top: -20px;
+    margin-bottom: 0;
+    line-height: 1.1;
+}
+
+.main-subtitle {
+    text-align: center;
+    font-size: clamp(2rem, 4vw, 4rem) !important;
+    color: #6c757d;
+    margin-top: -10px;
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    opacity: 0.9;
 }
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown("""
-<style>
-.main-subtitle {
-    text-align: center;
-    font-size: clamp(2rem, 5vw, 6rem);
-    color: #6c757d;
-    margin-bottom: 1rem;
-    font-weight: 500;
-}
-</style>
-""", unsafe_allow_html=True)
+# ENCABEZADO (CORREGIDO)
+st.markdown(
+    '<div class="main-title">🐎 Analizador de Riesgo Clínico Equino</div>',
+    unsafe_allow_html=True)
+
+st.markdown(
+    '<div class="main-subtitle">Herramienta de apoyo clínico veterinario</div>',
+    unsafe_allow_html=True)
 
 # CARGA DE MODELOS
 @st.cache_resource
