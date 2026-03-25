@@ -6,6 +6,24 @@ import os
 
 # ── CONFIGURACIÓN ─────────────────────────────────────────
 st.set_page_config(
+
+# ── ESTILO CSS ────────────────────────────────────────────
+st.markdown("""
+    <style>
+    .main-title {
+        text-align: center;
+        font-size: 2.5rem;
+        font-weight: bold;
+        padding-top: 1rem;
+    }
+    .main-subtitle {
+        text-align: center;
+        font-size: 1.2rem;
+        color: gray;
+        margin-bottom: 1rem;
+    }
+    </style>
+""", unsafe_allow_html=True)
     page_title="Analizador de Riesgo Clínico Equino",
     page_icon="🐴",
     layout="centered"
@@ -44,8 +62,10 @@ if 'historial' not in st.session_state:
     st.session_state.historial = []
 
 # ── ENCABEZADO PRINCIPAL ──────────────────────────────────
-st.title("🐴 Analizador de Riesgo Clínico Equino")
-st.subheader("Herramienta de apoyo clínico veterinario")
+st.markdown('<p class="main-title">🐴 Analizador de Riesgo Clínico Equino</p>',
+            unsafe_allow_html=True)
+st.markdown('<p class="main-subtitle">Herramienta de apoyo clínico veterinario</p>',
+            unsafe_allow_html=True)
 st.warning("""
 ⚠️ Esta herramienta es un apoyo basado en Machine Learning.
 No reemplaza el diagnóstico veterinario profesional.
