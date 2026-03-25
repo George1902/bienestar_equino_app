@@ -11,14 +11,28 @@ st.set_page_config(
     layout="centered"
 )
 
-# ENCABEZADO (CORREGIDO)
-st.markdown(
-    '<div class="main-title">🐎 Analizador de Riesgo Clínico Equino</div>',
-    unsafe_allow_html=True)
+# ESTILO CSS (TAMAÑO EQUILIBRADO)
+st.markdown("""
+<style>
+.main-title {
+    text-align: center;
+    font-size: clamp(2.5rem, 5vw, 4rem) !important;
+    font-weight: 800;
+    margin-bottom: 0;
+    line-height: 1.2;
+}
 
-st.markdown(
-    '<div class="main-subtitle">Herramienta de apoyo clínico veterinario</div>',
-    unsafe_allow_html=True)
+.main-subtitle {
+    text-align: center;
+    font-size: clamp(1.2rem, 2vw, 1.8rem) !important;
+    color: #6c757d;
+    margin-top: 0.2rem;
+    margin-bottom: 1.2rem;
+    font-weight: 400;
+    opacity: 0.85;
+}
+</style>
+""", unsafe_allow_html=True)
 
 # CARGA DE MODELOS
 @st.cache_resource
@@ -54,14 +68,14 @@ if 'historial' not in st.session_state:
 
 # ENCABEZADO
 st.markdown(
-    '<p class="main-title">\U0001f434 Analizador de Riesgo Clinico Equino</p>',
+    '<p class="main-title">\U0001f434 Analizador de Riesgo Clínico Equino</p>',
     unsafe_allow_html=True)
 st.markdown(
-    '<p class="main-subtitle">Herramienta de apoyo clinico veterinario</p>',
+    '<p class="main-subtitle">Herramienta de apoyo clínico veterinario</p>',
     unsafe_allow_html=True)
 st.warning(
     "\u26a0\ufe0f Esta herramienta es un apoyo basado en Machine Learning. "
-    "No reemplaza el diagnostico veterinario profesional.")
+    "No reemplaza el diagnóstico veterinario profesional.")
 st.divider()
 
 # TABS
@@ -71,7 +85,7 @@ tab1, tab2 = st.tabs(["\U0001f50d Analizar caballo",
 # TAB 1 - FORMULARIO
 with tab1:
 
-    st.header("\U0001f4cb Datos clinicos del caballo")
+    st.header("\U0001f4cb Datos clínicos del caballo")
 
     nombre_caballo = st.text_input(
         "\U0001f40e Nombre del caballo",
