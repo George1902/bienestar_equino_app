@@ -6,7 +6,7 @@ import os
 
 # ── CONFIGURACIÓN ─────────────────────────────────────────
 st.set_page_config(
-    page_title="Analizador de Riesgo Clínico Equino",
+    page_title="Bienestar Equino — Analizador de Riesgo Clínico Equino",
     page_icon="🐴",
     layout="centered"
 )
@@ -39,6 +39,10 @@ modelo, scaler, le, features = cargar_modelos()
 if modelo is None:
     st.stop()
 
+# ── HISTORIAL ─────────────────────────────────────────────
+if 'historial' not in st.session_state:
+    st.session_state.historial = []
+
 # ── ENCABEZADO ────────────────────────────────────────────
 st.title("🐴 Analizador de Riesgo Clínico Equino")
 st.subheader("Herramienta de apoyo clínico veterinario")
@@ -52,7 +56,6 @@ st.divider()
 # ── FORMULARIO ────────────────────────────────────────────
 st.header("📋 Datos clínicos del caballo")
 
-# Nombre del caballo
 nombre_caballo = st.text_input(
     "🐎 Nombre del caballo",
     placeholder="Ej: Tornado, Relámpago, Luna...",
@@ -132,7 +135,7 @@ def calcular_bienestar(pulse, rectal_temp, pain, peristalsis):
     return score
 
 def nivel_bienestar(score):
-    if score >= 8: return "Alto",     "🟢"
+    if score >= 8:   return "Alto",     "🟢"
     elif score >= 5: return "Moderado", "🟡"
     elif score >= 2: return "Bajo",     "🟠"
     else:            return "Crítico",  "🔴"
@@ -141,8 +144,8 @@ def nivel_bienestar(score):
 if st.button("🔍 Analizar caballo", use_container_width=True,
              type="primary"):
 
-    # Validar nombre
-    nombre = nombre_caballo.strip() if nombre_caballo.strip() else "Sin nombre"
+    nombre = nombre_caballo.strip() \
+             if nombre_caballo.strip() else "Sin nombre"
 
     entrada = {f: 0 for f in features}
     entrada.update({
@@ -162,16 +165,34 @@ if st.button("🔍 Analizar caballo", use_container_width=True,
     entrada['indice_bienestar'] = idx
 
     try:
-        X        = pd.DataFrame([entrada])[features]
-        X_scaled = scaler.transform(X)
-        pred     = modelo.predict(X_scaled)
-        proba    = modelo.predict_proba(X_scaled)[0]
+        X         = pd.DataFrame([entrada])[features]
+        X_scaled  = scaler.transform(X)
+        pred      = modelo.predict(X_scaled)
+        proba     = modelo.predict_proba(X_scaled)[0]
         resultado = le.inverse_transform(pred.astype(int))[0]
         nivel, emoji = nivel_bienestar(idx)
 
-        st.divider()
+        # Guardar en historial
+        st.session_state.historial.append({
+            'Nombre'      : nombre,
+            'Pronostico'  : '✅ Sobrevive'   if resultado == 'lived'
+                            else '❌ Alto riesgo' if resultado == 'died'
+                            else '⚠️ Eutanasia',
+            'Probabilidad': f"{max(proba)*100:.1f}%",
+            'Bienestar'   : f"{idx}/9",
+            'Nivel'       : f"{emoji} {nivel}",
+            'Pulso'       : f"{pulse} ppm",
+            'Temperatura' : f"{rectal_temp}°C",
+            'Dolor'       : {
+                0: "Sin dolor",
+                1: "Deprimido",
+                2: "Dolor leve",
+                3: "Dolor severo",
+                4: "Dolor extremo"
+            }[pain]
+        })
 
-        # Nombre del caballo en el resultado
+        st.divider()
         st.header(f"📊 Resultado — {nombre}")
 
         # Resultado principal
@@ -191,7 +212,7 @@ if st.button("🔍 Analizar caballo", use_container_width=True,
             'euthanized': '⚠️ Eutanasia'
         }
         for col, clase, p in zip(
-            [col1, col2, col3], le.classes_, proba):
+                [col1, col2, col3], le.classes_, proba):
             col.metric(nombres_clases[clase], f"{p*100:.1f}%")
 
         # Índice de bienestar
@@ -201,7 +222,7 @@ if st.button("🔍 Analizar caballo", use_container_width=True,
         col2.metric("Nivel", f"{emoji} {nivel}")
         st.progress(idx / 9)
 
-        # Alertas clínicas — solo aparecen al presionar el botón
+        # Alertas clínicas
         st.subheader("⚠️ Alertas clínicas")
         alertas = []
 
@@ -241,6 +262,46 @@ if st.button("🔍 Analizar caballo", use_container_width=True,
         st.error(f"Error en predicción: {e}")
 
     st.divider()
+    st.caption("""
+    ⚠️ Este modelo es una herramienta de apoyo clínico con
+    65% de accuracy. No reemplaza el diagnóstico veterinario
+    profesional. Desarrollado por Jorge Ojeda — ONE Alura LATAM 2026.
+    """)
+
+# ── HISTORIAL DE CABALLOS ANALIZADOS ─────────────────────
+if st.session_state.historial:
+    st.divider()
+    st.header("📋 Historial de caballos analizados")
+    st.caption(f"Total analizados en esta sesión: "
+               f"{len(st.session_state.historial)}")
+
+    df_historial = pd.DataFrame(st.session_state.historial)
+    st.dataframe(df_historial, use_container_width=True)
+
+    col1, col2 = st.columns(2)
+
+    # Resumen rápido
+    with col1:
+        sobreviven = sum(
+            1 for h in st.session_state.historial
+            if '✅' in h['Pronostico']
+        )
+        st.metric("✅ Sobreviven", sobreviven)
+
+    with col2:
+        en_riesgo = sum(
+            1 for h in st.session_state.historial
+            if '❌' in h['Pronostico'] or '⚠️' in h['Pronostico']
+        )
+        st.metric("⚠️ En riesgo", en_riesgo)
+
+    # Botón limpiar
+    if st.button("🗑️ Limpiar historial",
+                 use_container_width=True):
+        st.session_state.historial = []
+        st.rerun()
+                     
+ st.divider()
     st.caption("""
     ⚠️ Este modelo es una herramienta de apoyo clínico con
     65% de accuracy. No reemplaza el diagnóstico veterinario
