@@ -6,7 +6,7 @@ import os
 
 # ── CONFIGURACIÓN ─────────────────────────────────────────
 st.set_page_config(
-    page_title="Bienestar Equino — Analizador de Riesgo Clínico Equino",
+    page_title=#🐴 Analizador de Riesgo Clínico Equino",
     page_icon="🐴",
     layout="centered"
 )
@@ -28,7 +28,7 @@ st.markdown("""
     }
     </style>
 """, unsafe_allow_html=True)
-    page_title="Bienestar Equino — Analizador de Riesgo Clínico Equino",
+    page_title=🐴 Analizador de Riesgo Clínico Equino,
     page_icon="🐴",
     layout="centered"
 )
