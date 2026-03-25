@@ -66,7 +66,7 @@ if 'historial' not in st.session_state:
     st.session_state.historial = []
 
 # ── ENCABEZADO PRINCIPAL ──────────────────────────────────
-st.markdown('<p class="main-title">🐴 Analizador de Riesgo Clínico Equino</p>',
+st.markdown('<p class="main-title">🐴 "Bienestar Equino — Analizador de Riesgo Clínico Equino"</p>',
             unsafe_allow_html=True)
 st.markdown('<p class="main-subtitle">Herramienta de apoyo clínico veterinario</p>',
             unsafe_allow_html=True)
