@@ -4,14 +4,14 @@ import numpy as np
 import pandas as pd
 import os
 
-# ── CONFIGURACIÓN ─────────────────────────────────────────
+# CONFIGURACION
 st.set_page_config(
-    page_title=#🐴 Analizador de Riesgo Clínico Equino",
+    page_title="Analizador de Riesgo Clinico Equino",
     page_icon="🐴",
     layout="centered"
 )
 
-# ── ESTILO CSS ────────────────────────────────────────────
+# ESTILO CSS
 st.markdown("""
     <style>
     .main-title {
@@ -28,12 +28,8 @@ st.markdown("""
     }
     </style>
 """, unsafe_allow_html=True)
-    page_title= "Analizador de Riesgo Clínico Equino",
-    page_icon="🐴",
-    layout="centered"
-)
 
-# ── CARGA DE MODELOS ──────────────────────────────────────
+# CARGA DE MODELOS
 @st.cache_resource
 def cargar_modelos():
     try:
@@ -61,34 +57,34 @@ modelo, scaler, le, features = cargar_modelos()
 if modelo is None:
     st.stop()
 
-# ── HISTORIAL ─────────────────────────────────────────────
+# HISTORIAL
 if 'historial' not in st.session_state:
     st.session_state.historial = []
 
-# ── ENCABEZADO PRINCIPAL ──────────────────────────────────
-st.markdown('<p class="main-title">🐴 "Bienestar Equino — Analizador de Riesgo Clínico Equino"</p>',
-            unsafe_allow_html=True)
-st.markdown('<p class="main-subtitle">Herramienta de apoyo clínico veterinario</p>',
-            unsafe_allow_html=True)
-st.warning("""
-⚠️ Esta herramienta es un apoyo basado en Machine Learning.
-No reemplaza el diagnóstico veterinario profesional.
-""")
+# ENCABEZADO
+st.markdown(
+    '<p class="main-title">\U0001f434 Analizador de Riesgo Clinico Equino</p>',
+    unsafe_allow_html=True)
+st.markdown(
+    '<p class="main-subtitle">Herramienta de apoyo clinico veterinario</p>',
+    unsafe_allow_html=True)
+st.warning(
+    "\u26a0\ufe0f Esta herramienta es un apoyo basado en Machine Learning. "
+    "No reemplaza el diagnostico veterinario profesional.")
 st.divider()
 
-# ── TABS ──────────────────────────────────────────────────
-tab1, tab2 = st.tabs(["🔍 Analizar caballo", "📋 Historial"])
+# TABS
+tab1, tab2 = st.tabs(["\U0001f50d Analizar caballo",
+                      "\U0001f4cb Historial"])
 
-# ══════════════════════════════════════════════════════════
-# TAB 1 — FORMULARIO
-# ══════════════════════════════════════════════════════════
+# TAB 1 - FORMULARIO
 with tab1:
 
-    st.header("📋 Datos clínicos del caballo")
+    st.header("\U0001f4cb Datos clinicos del caballo")
 
     nombre_caballo = st.text_input(
-        "🐎 Nombre del caballo",
-        placeholder="Ej: Tornado, Relámpago, Luna...",
+        "\U0001f40e Nombre del caballo",
+        placeholder="Ej: Tornado, Relampago, Luna...",
         help="Ingresa el nombre del caballo"
     )
 
@@ -103,16 +99,16 @@ with tab1:
         pulse = st.slider("Pulso (ppm)", 30, 184, 60,
             help="Rango normal: 28-44 ppm")
 
-        rectal_temp = st.slider("Temperatura (°C)",
+        rectal_temp = st.slider("Temperatura (C)",
             35.0, 41.0, 38.2, 0.1,
-            help="Rango normal: 37.5-38.5°C")
+            help="Rango normal: 37.5-38.5 C")
 
         respiratory_rate = st.slider("Frecuencia respiratoria",
             8, 96, 20,
             help="Rango normal: 8-16 rpm")
 
-        surgery = st.selectbox("¿Cirugía?", [0, 1],
-            format_func=lambda x: "No" if x == 0 else "Sí")
+        surgery = st.selectbox("Cirugia?", [0, 1],
+            format_func=lambda x: "No" if x == 0 else "Si")
 
     with col2:
         pain = st.selectbox("Nivel de dolor", [0, 1, 2, 3, 4],
@@ -135,11 +131,11 @@ with tab1:
         packed_cell_volume = st.slider("Volumen celular (%)",
             23, 75, 45)
 
-        total_protein = st.slider("Proteína total (g/dl)",
+        total_protein = st.slider("Proteina total (g/dl)",
             3.0, 89.0, 7.5, 0.1)
 
         abdominal_distention = st.selectbox(
-            "Distensión abdominal", [0, 1, 2, 3],
+            "Distension abdominal", [0, 1, 2, 3],
             format_func=lambda x: {
                 0: "Ninguna",
                 1: "Leve",
@@ -149,7 +145,7 @@ with tab1:
 
     st.divider()
 
-    # ── FUNCIONES ─────────────────────────────────────────
+    # FUNCIONES
     def calcular_bienestar(pulse, rectal_temp, pain, peristalsis):
         score = 0
         if pulse <= 44:   score += 3
@@ -165,13 +161,13 @@ with tab1:
         return score
 
     def nivel_bienestar(score):
-        if score >= 8:   return "Alto",     "🟢"
-        elif score >= 5: return "Moderado", "🟡"
-        elif score >= 2: return "Bajo",     "🟠"
-        else:            return "Crítico",  "🔴"
+        if score >= 8:   return "Alto",     "\U0001f7e2"
+        elif score >= 5: return "Moderado", "\U0001f7e1"
+        elif score >= 2: return "Bajo",     "\U0001f7e0"
+        else:            return "Critico",  "\U0001f534"
 
-    # ── BOTÓN ─────────────────────────────────────────────
-    if st.button("🔍 Analizar caballo",
+    # BOTON
+    if st.button("\U0001f50d Analizar caballo",
                  use_container_width=True,
                  type="primary"):
 
@@ -203,21 +199,21 @@ with tab1:
             proba     = modelo.predict_proba(X_scaled)[0]
             resultado = le.inverse_transform(
                 pred.astype(int))[0]
-            nivel, emoji = nivel_bienestar(idx)
+            nivel, icono = nivel_bienestar(idx)
 
             # Guardar en historial
             st.session_state.historial.append({
                 'Nombre'      : nombre,
-                'Pronostico'  : '✅ Sobrevive'
+                'Pronostico'  : '\u2705 Sobrevive'
                                 if resultado == 'lived'
-                                else '❌ Alto riesgo'
+                                else '\u274c Alto riesgo'
                                 if resultado == 'died'
-                                else '⚠️ Eutanasia',
+                                else '\u26a0\ufe0f Eutanasia',
                 'Probabilidad': f"{max(proba)*100:.1f}%",
                 'Bienestar'   : f"{idx}/9",
-                'Nivel'       : f"{emoji} {nivel}",
+                'Nivel'       : f"{icono} {nivel}",
                 'Pulso'       : f"{pulse} ppm",
-                'Temperatura' : f"{rectal_temp}°C",
+                'Temperatura' : f"{rectal_temp} C",
                 'Dolor'       : {
                     0: "Sin dolor",
                     1: "Deprimido",
@@ -228,125 +224,127 @@ with tab1:
             })
 
             st.divider()
-            st.header(f"📊 Resultado — {nombre}")
+            st.header(f"\U0001f4ca Resultado - {nombre}")
 
             # Resultado principal
             if resultado == 'lived':
-                st.success("## ✅ PRONÓSTICO: SOBREVIVIRÁ")
+                st.success(
+                    "\u2705 PRONOSTICO: SOBREVIVIRA")
             elif resultado == 'died':
-                st.error("## ❌ PRONÓSTICO: ALTO RIESGO")
+                st.error(
+                    "\u274c PRONOSTICO: ALTO RIESGO DE MUERTE")
             else:
-                st.warning("## ⚠️ PRONÓSTICO: EUTANASIA")
+                st.warning(
+                    "\u26a0\ufe0f PRONOSTICO: CONSIDERAR EUTANASIA")
 
             # Probabilidades
-            st.subheader("📈 Probabilidades")
+            st.subheader("\U0001f4c8 Probabilidades")
             col1, col2, col3 = st.columns(3)
             nombres_clases = {
-                'lived'     : '✅ Sobrevive',
-                'died'      : '❌ Muere',
-                'euthanized': '⚠️ Eutanasia'
+                'lived'     : '\u2705 Sobrevive',
+                'died'      : '\u274c Muere',
+                'euthanized': '\u26a0\ufe0f Eutanasia'
             }
             for col, clase, p in zip(
                     [col1, col2, col3], le.classes_, proba):
                 col.metric(nombres_clases[clase],
                            f"{p*100:.1f}%")
 
-            # Índice de bienestar
-            st.subheader("🏥 Índice de Bienestar")
+            # Indice de bienestar
+            st.subheader("\U0001f3e5 Indice de Bienestar")
             col1, col2 = st.columns(2)
-            col1.metric("Puntuación", f"{idx}/9")
-            col2.metric("Nivel", f"{emoji} {nivel}")
+            col1.metric("Puntuacion", f"{idx}/9")
+            col2.metric("Nivel", f"{icono} {nivel}")
             st.progress(idx / 9)
 
-            # Alertas clínicas
-            st.subheader("⚠️ Alertas clínicas")
+            # Alertas clinicas
+            st.subheader("\u26a0\ufe0f Alertas clinicas")
             alertas = []
 
             if pulse > 80:
                 alertas.append(
-                    "🔴 Pulso muy elevado — "
-                    "estrés cardiovascular severo")
+                    "\U0001f534 Pulso muy elevado - "
+                    "estres cardiovascular severo")
             elif pulse > 60:
                 alertas.append(
-                    "🟡 Pulso elevado — monitorear de cerca")
+                    "\U0001f7e1 Pulso elevado - "
+                    "monitorear de cerca")
 
             if rectal_temp > 39.0:
                 alertas.append(
-                    "🔴 Temperatura alta — posible infección")
+                    "\U0001f534 Temperatura alta - "
+                    "posible infeccion")
             elif rectal_temp < 37.0:
                 alertas.append(
-                    "🔴 Temperatura baja — hipotermia")
+                    "\U0001f534 Temperatura baja - hipotermia")
 
             if pain >= 3:
                 alertas.append(
-                    "🔴 Dolor severo — "
-                    "requiere atención inmediata")
+                    "\U0001f534 Dolor severo - "
+                    "requiere atencion inmediata")
 
             if peristalsis == 0:
                 alertas.append(
-                    "🔴 Peristalsis ausente — riesgo de cólico")
+                    "\U0001f534 Peristalsis ausente - "
+                    "riesgo de colico")
 
             if total_protein > 8.5:
                 alertas.append(
-                    "🟡 Proteína elevada — "
-                    "posible deshidratación")
+                    "\U0001f7e1 Proteina elevada - "
+                    "posible deshidratacion")
 
             if alertas:
                 for alerta in alertas:
                     st.warning(alerta)
             else:
                 st.success(
-                    "✅ Sin alertas clínicas críticas detectadas")
+                    "\u2705 Sin alertas clinicas criticas")
 
             st.info(
-                "💡 Revisa la pestaña **📋 Historial** "
+                "\U0001f4a1 Revisa la pestana Historial "
                 "para ver todos los caballos analizados")
 
         except Exception as e:
-            st.error(f"Error en predicción: {e}")
+            st.error(f"Error en prediccion: {e}")
 
         st.divider()
-        st.caption("""
-        ⚠️ Este modelo es una herramienta de apoyo clínico
-        con 65% de accuracy. No reemplaza el diagnóstico
-        veterinario profesional.
-        Desarrollado por Jorge Ojeda — ONE Alura LATAM 2026.
-        """)
+        st.caption(
+            "\u26a0\ufe0f Este modelo es una herramienta de "
+            "apoyo clinico con 65% de accuracy. No reemplaza "
+            "el diagnostico veterinario profesional. "
+            "Desarrollado por Jorge Ojeda.")
 
-# ══════════════════════════════════════════════════════════
-# TAB 2 — HISTORIAL
-# ══════════════════════════════════════════════════════════
+# TAB 2 - HISTORIAL
 with tab2:
 
-    st.header("📋 Historial de caballos analizados")
+    st.header("\U0001f4cb Historial de caballos analizados")
 
     if not st.session_state.historial:
-        st.info("Aún no has analizado ningún caballo. "
-                "Ve a la pestaña 🔍 Analizar caballo.")
+        st.info(
+            "Aun no has analizado ningun caballo. "
+            "Ve a la pestana Analizar caballo.")
     else:
         st.caption(
-            f"Total analizados en esta sesión: "
+            f"Total analizados en esta sesion: "
             f"{len(st.session_state.historial)}")
 
-        # Métricas resumen
         col1, col2, col3 = st.columns(3)
         sobreviven = sum(
             1 for h in st.session_state.historial
-            if '✅' in h['Pronostico'])
+            if 'Sobrevive' in h['Pronostico'])
         en_riesgo = sum(
             1 for h in st.session_state.historial
-            if '❌' in h['Pronostico'])
+            if 'Alto riesgo' in h['Pronostico'])
         eutanasia = sum(
             1 for h in st.session_state.historial
-            if '⚠️' in h['Pronostico'])
+            if 'Eutanasia' in h['Pronostico'])
 
-        col1.metric("✅ Sobreviven", sobreviven)
-        col2.metric("❌ Alto riesgo", en_riesgo)
-        col3.metric("⚠️ Eutanasia", eutanasia)
+        col1.metric("\u2705 Sobreviven", sobreviven)
+        col2.metric("\u274c Alto riesgo", en_riesgo)
+        col3.metric("\u26a0\ufe0f Eutanasia", eutanasia)
 
         st.divider()
 
-        # Tabla completa
         df_historial = pd.DataFrame(
             st.session_state.historial)
         st.dataframe(df_historial,
@@ -354,15 +352,7 @@ with tab2:
 
         st.divider()
 
-        # Botón limpiar
-        if st.button("🗑️ Limpiar historial",
+        if st.button("\U0001f5d1\ufe0f Limpiar historial",
                      use_container_width=True):
             st.session_state.historial = []
             st.rerun()
-                         
-    st.divider()
-    st.caption("""
-    ⚠️ Este modelo es una herramienta de apoyo clínico con
-    65% de accuracy. No reemplaza el diagnóstico veterinario
-    profesional. Desarrollado por Jorge Ojeda.
-    """)
