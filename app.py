@@ -13,20 +13,27 @@ st.set_page_config(
 
 # ESTILO CSS
 st.markdown("""
-    <style>
-    .main-title {
-        text-align: center;
-        font-size: 4.5rem;
-        font-weight: bold;
-        padding-top: 1rem;
-    }
-    .main-subtitle {
-        text-align: center;
-        font-size: 3.2rem;
-        color: gray;
-        margin-bottom: 1rem;
-    }
-    </style>
+<style>
+.main-title {
+    text-align: center;
+    font-size: clamp(4rem, 10vw, 12rem);
+    font-weight: 900;
+    margin-top: -20px;
+}
+</style>
+""", unsafe_allow_html=True)
+}
+   st.markdown("""
+<style>
+.main-subtitle {
+    text-align: center;
+    font-size: clamp(2rem, 5vw, 6rem);
+    color: #6c757d;
+    margin-bottom: 1rem;
+    font-weight: 500;
+}
+</style>
+""", unsafe_allow_html=True)
 """, unsafe_allow_html=True)
 
 # CARGA DE MODELOS
