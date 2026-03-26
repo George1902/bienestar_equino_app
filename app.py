@@ -7,31 +7,26 @@ import os
 # CONFIGURACION
 st.set_page_config(
     page_title="Analizador de Riesgo Clínico Equino",
-    page_icon="🐴",
+    page_icon="\U0001f434",
     layout="centered"
 )
 
-# ESTILO CSS (TAMAÑO EQUILIBRADO)
+# ESTILO CSS
 st.markdown("""
-<style>
-.main-title {
-    text-align: center;
-    font-size: clamp(2.5rem, 5vw, 4rem) !important;
-    font-weight: 800;
-    margin-bottom: 0;
-    line-height: 1.2;
-}
-
-.main-subtitle {
-    text-align: center;
-    font-size: clamp(1.2rem, 2vw, 1.8rem) !important;
-    color: #6c757d;
-    margin-top: 0.2rem;
-    margin-bottom: 1.2rem;
-    font-weight: 400;
-    opacity: 0.85;
-}
-</style>
+    <style>
+    .main-title {
+        text-align: center;
+        font-size: 2.5rem;
+        font-weight: bold;
+        padding-top: 1rem;
+    }
+    .main-subtitle {
+        text-align: center;
+        font-size: 1.2rem;
+        color: gray;
+        margin-bottom: 1rem;
+    }
+    </style>
 """, unsafe_allow_html=True)
 
 # CARGA DE MODELOS
@@ -66,26 +61,123 @@ if modelo is None:
 if 'historial' not in st.session_state:
     st.session_state.historial = []
 
+# FUNCIONES
+def calcular_bienestar(pulse, rectal_temp, pain, peristalsis):
+    score = 0
+    if pulse <= 44:   score += 3
+    elif pulse <= 60: score += 2
+    elif pulse <= 80: score += 1
+    if 37.5 <= rectal_temp <= 38.5:   score += 2
+    elif 37.0 <= rectal_temp <= 39.0: score += 1
+    if pain == 0:   score += 3
+    elif pain == 1: score += 2
+    elif pain == 2: score += 1
+    if peristalsis == 2: score += 2
+    elif peristalsis == 1: score += 1
+    return score
+
+def nivel_bienestar(score):
+    if score >= 8:   return "Alto",     "\U0001f7e2"
+    elif score >= 5: return "Moderado", "\U0001f7e1"
+    elif score >= 2: return "Bajo",     "\U0001f7e0"
+    else:            return "Critico",  "\U0001f534"
+
+def motor_clinico(pulse, rectal_temp, pain, peristalsis,
+                  total_protein, respiratory_rate, nivel):
+
+    sistema_gi   = 0
+    sistema_hemo = 0
+    sistema_sist = 0
+    hallazgos    = []
+
+    # SISTEMA GASTROINTESTINAL
+    if peristalsis == 0:
+        sistema_gi += 3
+        hallazgos.append("ausencia de peristalsis")
+    elif peristalsis == 1:
+        sistema_gi += 2
+        hallazgos.append("hipomotilidad intestinal")
+
+    if pain >= 3:
+        sistema_gi += 2
+        hallazgos.append("dolor abdominal significativo")
+
+    # SISTEMA HEMODINAMICO
+    if pulse > 80:
+        sistema_hemo += 3
+        hallazgos.append("taquicardia severa")
+    elif pulse > 60:
+        sistema_hemo += 2
+        hallazgos.append("taquicardia moderada")
+
+    if total_protein > 8.5:
+        sistema_hemo += 2
+        hallazgos.append("hemoconcentracion")
+
+    # SISTEMA SISTEMICO
+    if rectal_temp > 39:
+        sistema_sist += 2
+        hallazgos.append("hipertermia")
+    elif rectal_temp < 37:
+        sistema_sist += 2
+        hallazgos.append("hipotermia")
+
+    if respiratory_rate > 20:
+        sistema_sist += 1
+        hallazgos.append("taquipnea")
+
+    # SISTEMA DOMINANTE
+    sistemas = {
+        "gastrointestinal": sistema_gi,
+        "hemodinamico"    : sistema_hemo,
+        "sistemico"       : sistema_sist
+    }
+
+    sistema_dominante = max(sistemas, key=sistemas.get)
+
+    # GRAVEDAD
+    gravedad_total = sistema_gi + sistema_hemo + sistema_sist
+
+    if gravedad_total >= 7:
+        gravedad = "alta"
+    elif gravedad_total >= 4:
+        gravedad = "moderada"
+    else:
+        gravedad = "leve"
+
+    # RESUMEN CLINICO
+    resumen = f"Paciente con compromiso {gravedad} "
+    resumen += f"con predominio del sistema {sistema_dominante}. "
+
+    if hallazgos:
+        resumen += "Se identifican hallazgos relevantes como: "
+        resumen += ", ".join(hallazgos) + "."
+
+    return resumen, sistema_dominante, gravedad
+
 # ENCABEZADO
 st.markdown(
-    '<p class="main-title">\U0001f434 Analizador de Riesgo Clínico Equino</p>',
+    '<p class="main-title">\U0001f434 Analizador de Riesgo Clinico Equino</p>',
     unsafe_allow_html=True)
 st.markdown(
-    '<p class="main-subtitle">Herramienta de apoyo clínico veterinario</p>',
+    '<p class="main-subtitle">Herramienta de apoyo clinico veterinario</p>',
     unsafe_allow_html=True)
 st.warning(
-    "\u26a0\ufe0f Esta herramienta es un apoyo basado en Machine Learning. "
-    "No reemplaza el diagnóstico veterinario profesional.")
+    "\u26a0\ufe0f Esta herramienta es un apoyo basado en "
+    "Machine Learning. No reemplaza el diagnostico "
+    "veterinario profesional.")
 st.divider()
 
 # TABS
 tab1, tab2 = st.tabs(["\U0001f50d Analizar caballo",
                       "\U0001f4cb Historial"])
 
+# ══════════════════════════════════════════════════════════
 # TAB 1 - FORMULARIO
+# ══════════════════════════════════════════════════════════
 with tab1:
 
-    st.header("\U0001f4cb Datos clínicos del caballo")
+    st.header("\U0001f4cb Datos clinicos del caballo")
 
     nombre_caballo = st.text_input(
         "\U0001f40e Nombre del caballo",
@@ -150,27 +242,6 @@ with tab1:
 
     st.divider()
 
-    # FUNCIONES
-    def calcular_bienestar(pulse, rectal_temp, pain, peristalsis):
-        score = 0
-        if pulse <= 44:   score += 3
-        elif pulse <= 60: score += 2
-        elif pulse <= 80: score += 1
-        if 37.5 <= rectal_temp <= 38.5:   score += 2
-        elif 37.0 <= rectal_temp <= 39.0: score += 1
-        if pain == 0:   score += 3
-        elif pain == 1: score += 2
-        elif pain == 2: score += 1
-        if peristalsis == 2: score += 2
-        elif peristalsis == 1: score += 1
-        return score
-
-    def nivel_bienestar(score):
-        if score >= 8:   return "Alto",     "\U0001f7e2"
-        elif score >= 5: return "Moderado", "\U0001f7e1"
-        elif score >= 2: return "Bajo",     "\U0001f7e0"
-        else:            return "Critico",  "\U0001f534"
-
     # BOTON
     if st.button("\U0001f50d Analizar caballo",
                  use_container_width=True,
@@ -206,6 +277,11 @@ with tab1:
                 pred.astype(int))[0]
             nivel, icono = nivel_bienestar(idx)
 
+            # Motor clinico
+            resumen, sistema, gravedad = motor_clinico(
+                pulse, rectal_temp, pain, peristalsis,
+                total_protein, respiratory_rate, nivel)
+
             # Guardar en historial
             st.session_state.historial.append({
                 'Nombre'      : nombre,
@@ -217,6 +293,8 @@ with tab1:
                 'Probabilidad': f"{max(proba)*100:.1f}%",
                 'Bienestar'   : f"{idx}/9",
                 'Nivel'       : f"{icono} {nivel}",
+                'Sistema'     : sistema,
+                'Gravedad'    : gravedad,
                 'Pulso'       : f"{pulse} ppm",
                 'Temperatura' : f"{rectal_temp} C",
                 'Dolor'       : {
@@ -233,11 +311,9 @@ with tab1:
 
             # Resultado principal
             if resultado == 'lived':
-                st.success(
-                    "\u2705 PRONOSTICO: SOBREVIVIRA")
+                st.success("\u2705 PRONOSTICO: SOBREVIVIRA")
             elif resultado == 'died':
-                st.error(
-                    "\u274c PRONOSTICO: ALTO RIESGO DE MUERTE")
+                st.error("\u274c PRONOSTICO: ALTO RIESGO DE MUERTE")
             else:
                 st.warning(
                     "\u26a0\ufe0f PRONOSTICO: CONSIDERAR EUTANASIA")
@@ -261,6 +337,39 @@ with tab1:
             col1.metric("Puntuacion", f"{idx}/9")
             col2.metric("Nivel", f"{icono} {nivel}")
             st.progress(idx / 9)
+
+            # Resumen clinico avanzado
+            st.subheader("\U0001f9fe Resumen clínico avanzado")
+            st.info(resumen)
+
+            # Sistema predominante
+            st.subheader("\U0001f9e0 Sistema predominante")
+            if sistema == "gastrointestinal":
+                st.error(
+                    "\U0001f534 Compromiso gastrointestinal predominante")
+            elif sistema == "hemodinamico":
+                st.warning(
+                    "\U0001f7e1 Compromiso hemodinamico predominante")
+            else:
+                st.info(
+                    "\U0001f535 Compromiso sistemico predominante")
+
+            # Interpretacion clinica
+            st.subheader("\U0001f4ca Interpretacion clinica")
+            if gravedad == "alta":
+                st.write(
+                    "El perfil clínico indica un cuadro de alta "
+                    "complejidad, con multiples sistemas comprometidos. "
+                    "Se recomienda atencion veterinaria inmediata.")
+            elif gravedad == "moderada":
+                st.write(
+                    "El cuadro clinico presenta alteraciones relevantes "
+                    "que requieren correlacion con la evolucion "
+                    "del paciente.")
+            else:
+                st.write(
+                    "El perfil clinico muestra alteraciones leves, "
+                    "sin evidencia clara de compromiso severo.")
 
             # Alertas clinicas
             st.subheader("\u26a0\ufe0f Alertas clinicas")
@@ -295,7 +404,7 @@ with tab1:
 
             if total_protein > 8.5:
                 alertas.append(
-                    "\U0001f7e1 Proteina elevada - "
+                    "\U0001f7e1 Proteína elevada - "
                     "posible deshidratacion")
 
             if alertas:
@@ -303,7 +412,7 @@ with tab1:
                     st.warning(alerta)
             else:
                 st.success(
-                    "\u2705 Sin alertas clinicas criticas")
+                    "\u2705 Sin alertas clínicas criticas")
 
             st.info(
                 "\U0001f4a1 Revisa la pestana Historial "
@@ -313,13 +422,14 @@ with tab1:
             st.error(f"Error en prediccion: {e}")
 
         st.divider()
-        st.caption(
-            "\u26a0\ufe0f Este modelo es una herramienta de "
-            "apoyo clinico con 65% de accuracy. No reemplaza "
-            "el diagnostico veterinario profesional. "
-            "Desarrollado por Jorge Ojeda.")
-
+    st.caption(
+    "\u26a0\ufe0f Herramienta de apoyo basada en analisis "
+    "de variables clinicas. Diseñada para complementar "
+    "la evaluacion veterinaria profesional, no sustituir "
+    "el juicio clinico. Desarrollado por Jorge Ojeda.")
+# ══════════════════════════════════════════════════════════
 # TAB 2 - HISTORIAL
+# ══════════════════════════════════════════════════════════
 with tab2:
 
     st.header("\U0001f4cb Historial de caballos analizados")
