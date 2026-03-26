@@ -79,7 +79,7 @@ def calcular_bienestar(pulse, rectal_temp, pain, peristalsis):
     elif pain == 2: score += 1
     if peristalsis == 2: score += 2
     elif peristalsis == 1: score += 1
-    return score
+    return min(score, 9)  # Limitar máximo a 9
 
 def nivel_bienestar(score):
     if score >= 8:   return "Alto",     "\U0001f7e2"
@@ -337,7 +337,7 @@ with tab1:
                            f"{p*100:.1f}%")
 
             # Indice de bienestar
-            st.subheader("\U0001f3e5 Indice de Bienestar")
+            st.subheader("\U0001f3e5 Índice de Bienestar")
             col1, col2 = st.columns(2)
             col1.metric("Puntuacion", f"{idx}/9")
             col2.metric("Nivel", f"{icono} {nivel}")
@@ -441,23 +441,23 @@ with tab2:
 
     if not st.session_state.historial:
         st.info(
-            "Aun no has analizado ningun caballo. "
+            "Aun no has analizado ningún caballo. "
             "Ve a la pestana Analizar caballo.")
     else:
         st.caption(
-            f"Total analizados en esta sesion: "
+            f"Total analizados en esta sesión: "
             f"{len(st.session_state.historial)}")
 
         col1, col2, col3 = st.columns(3)
         sobreviven = sum(
             1 for h in st.session_state.historial
-            if 'Sobrevive' in h['Pronostico'])
+            if 'Sobrevive' in h['Pronóstico'])
         en_riesgo = sum(
             1 for h in st.session_state.historial
-            if 'Alto riesgo' in h['Pronostico'])
+            if 'Alto riesgo' in h['Pronóstico'])
         eutanasia = sum(
             1 for h in st.session_state.historial
-            if 'Eutanasia' in h['Pronostico'])
+            if 'Eutanasia' in h['Pronóstico'])
 
         col1.metric("\u2705 Sobreviven", sobreviven)
         col2.metric("\u274c Alto riesgo", en_riesgo)
