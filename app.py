@@ -316,12 +316,12 @@ with tab1:
 
             # Resultado principal
             if resultado == 'lived':
-                st.success("\u2705 PRONOSTICO: SOBREVIVIRA")
+                st.success("\u2705 PRONÓSTICO: SOBREVIVIRÁ")
             elif resultado == 'died':
-                st.error("\u274c PRONOSTICO: ALTO RIESGO DE MUERTE")
+                st.error("\u274c PRONÓSTICO: ALTO RIESGO DE MUERTE")
             else:
                 st.warning(
-                    "\u26a0\ufe0f PRONOSTICO: CONSIDERAR EUTANASIA")
+                    "\u26a0\ufe0f PRONÓSTICO: CONSIDERAR EUTANASIA")
 
             # Probabilidades
             st.subheader("\U0001f4c8 Probabilidades")
@@ -360,7 +360,7 @@ with tab1:
                     "\U0001f535 Compromiso sistemico predominante")
 
             # Interpretacion clinica
-            st.subheader("\U0001f4ca Interpretacion clinica")
+            st.subheader("\U0001f4ca Interpretacion clínica")
             if gravedad == "alta":
                 st.write(
                     "El perfil clínico indica un cuadro de alta "
@@ -368,8 +368,8 @@ with tab1:
                     "Se recomienda atencion veterinaria inmediata.")
             elif gravedad == "moderada":
                 st.write(
-                    "El cuadro clinico presenta alteraciones relevantes "
-                    "que requieren correlacion con la evolucion "
+                    "El cuadro clínico presenta alteraciones relevantes "
+                    "que requieren correlacion con la evolución "
                     "del paciente.")
             else:
                 st.write(
@@ -377,7 +377,7 @@ with tab1:
                     "sin evidencia clara de compromiso severo.")
 
             # Alertas clinicas
-            st.subheader("\u26a0\ufe0f Alertas clinicas")
+            st.subheader("\u26a0\ufe0f Alertas clínicas")
             alertas = []
 
             if pulse > 80:
@@ -405,7 +405,7 @@ with tab1:
             if peristalsis == 0:
                 alertas.append(
                     "\U0001f534 Peristalsis ausente - "
-                    "riesgo de colico")
+                    "riesgo de cólico")
 
             if total_protein > 8.5:
                 alertas.append(
@@ -441,7 +441,7 @@ with tab2:
 
     if not st.session_state.historial:
         st.info(
-            "Aun no has analizado ningún caballo. "
+            "Aún no has analizado ningún caballo. "
             "Ve a la pestana Analizar caballo.")
     else:
         st.caption(
